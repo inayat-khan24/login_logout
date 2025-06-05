@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 
 export  const createForm = async(req,res)=>{
-   try {
+  try {
       const {name,email,password} = req.body
       const user = await  formModel.findOne({email})
       if(user){
@@ -14,11 +14,12 @@ export  const createForm = async(req,res)=>{
       const passwordHashed = await bcrypt.hash(password,10)
      const formcreate = new formModel({name,email,password:passwordHashed} )
      const saveForm = await formcreate.save()
-    return  res.status(201).json(saveForm,{massage:"sing up",success:true})
+    return  res.status(201).json({saveForm,message:"sing up",success:true})
    } catch (err) {
-    return res.status(500).json({massage:"internal server error ",success:false,error:err.massage})
+    console.log(err)
+        return res.status(500).json({massage:"internal server error ",success:false})
    }
-}
+} 
 
 export  const login = async(req,res)=>{
    try {
@@ -41,7 +42,8 @@ export  const login = async(req,res)=>{
     // after that make product api
 
    res.status(200).json({
-    massage: "login success",
+    message: "login success",
+    success:true,
     jwtToken,
     email,
     name : user.name,

@@ -1,9 +1,12 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { handleSuccess } from '../utils.jsx'
+import { ToastContainer } from 'react-toastify'
 
 const Home = () => {
   const [data,setData] = useState([])
+  const [loggedInUser,setLoggedInUser] = useState("")
   const navigate = useNavigate()
   const dataFetch = async()=>{
    try {
@@ -26,17 +29,23 @@ const Home = () => {
 
  
   useEffect(()=>{
+   setLoggedInUser( localStorage.getItem('loggedInuser'))
     dataFetch()
   },[])
 
 const handleLogout =()=>{
    localStorage.removeItem('token')
-   navigate("/login")
+   localStorage.removeItem('loggedInuser')
+   handleSuccess("user logged out")
+   setTimeout(() => {
+     navigate("/login")
+   }, 1000);
 }
   
   return (
     <div className='min-h-screen flex flex-col gap-4 justify-center items-center'>
-    <div className='flex gap-8'>
+      <h1>{`welcome ${loggedInUser}`}</h1>
+    <div className='flex  gap-8'>
       {
         data.map((e,index)=>{
           return <div key={index} >  
@@ -47,6 +56,7 @@ const handleLogout =()=>{
           </div>
         })
       }
+      <ToastContainer/>
     </div>
       <button 
       onClick={handleLogout}
